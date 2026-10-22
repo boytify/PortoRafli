@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Land mapping, analysis, and monitoring with GIS, drones, and satellite imagery, from field survey to finished map.">
+<title>Moch Rafli Firmansyah | Portofolio Geospasial</title>
+<style>
+:root {
+  color-scheme: light;
+  --site-primary: #102b3f;
+  --site-on-primary: #ffffff;
+  --site-secondary: #b8f36b;
+  --site-on-secondary: #102b3f;
+  --site-background: #f5f7f6;
+  --site-on-background: #132b3a;
+  --site-font-body: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --site-font-heading: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --site-heading-scale: 1;
+  --site-spacing-scale: 1;
+  --site-radius-scale: 1;
+  --site-decoration-opacity: 1;
+  --surface: #ffffff;
+  --surface-soft: #eaf0ef;
+  --text-muted: #5d707a;
+  --line: #d8e2e3;
+  --accent: #168a8a;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; font-family: var(--site-font-body); background: var(--site-background); color: var(--site-on-background); line-height: 1.6; }
+#app { min-height: 100vh; width: 100%; background-color: var(--site-background); color: var(--site-on-background); border-radius: 0; overflow: hidden; }
+a { color: inherit; text-decoration: none; }
+button, a { -webkit-tap-highlight-color: transparent; }
+.wrap { width: min(1160px, calc(100% - 48px)); margin: 0 auto; }
+nav { height: 78px; display:flex; align-items:center; justify-content:space-between; gap:24px; }
+.brand { font-weight: 800; letter-spacing: -.04em; font-size: 1.08rem; }
+.brand span { color: var(--accent); }
+.navlinks { display:flex; align-items:center; gap:26px; font-size:.88rem; color:var(--text-muted); }
+.hero .navlinks { color:#c4d5d9; }
+.hero .nav-cta { color:#fff; border-color:rgba(255,255,255,.3); }
+.navlinks a:hover, .text-link:hover { color:var(--accent); }
+.nav-cta { border:1px solid var(--line); border-radius:999px; padding:10px 16px; color:var(--site-on-background); }
+.hero { background:var(--site-primary); color:var(--site-on-primary); position:relative; isolation:isolate; overflow:hidden; }
+.hero:after { content:""; position:absolute; z-index:-1; width:560px; height:560px; border:1px solid rgba(184,243,107,.15); border-radius:50%; right:-190px; top:-265px; box-shadow:0 0 0 72px rgba(255,255,255,.025), 0 0 0 145px rgba(255,255,255,.02); opacity:var(--site-decoration-opacity); }
+.hero-inner { min-height:calc(100svh - 78px); display:flex; align-items:center; padding:54px 0 82px; }
+.hero-cover { width:100%; display:grid; grid-template-columns:minmax(0,1fr) 250px; align-items:center; gap:36px; }
+.hero-copy-content { min-width:0; }
+.hero-flight-scene { display:grid; place-items:center; width:100%; height:190px; color:var(--site-secondary); }
+.hero-flight-scene svg { width:100%; height:100%; overflow:visible; }
+.hero-flight-path { fill:none; stroke:rgba(184,243,107,.36); stroke-width:1.5; stroke-dasharray:4 6; }
+.hero-flight-drone { transform-box:fill-box; transform-origin:center; animation:drone-flight-loop 4.8s ease-in-out infinite; }
+.hero-wordmark { margin:18px 0 8px; color:var(--site-secondary); font-size:clamp(4.4rem, 14vw, 10.5rem); font-weight:900; line-height:.78; letter-spacing:-.105em; }
+.eyebrow { display:flex; align-items:center; gap:10px; text-transform:uppercase; letter-spacing:.16em; font-size:.72rem; font-weight:700; color:var(--site-secondary); }
+.dot { display:inline-block; width:7px; height:7px; border-radius:50%; background:var(--site-secondary); }
+h1,h2,h3,p { margin-top:0; }
+h1 { font-family:var(--site-font-heading); font-size:calc(clamp(2.5rem, 6.4vw, 5.2rem) * var(--site-heading-scale)); letter-spacing:-.075em; line-height:.99; margin:20px 0; max-width:1000px; }
+.hero h1 { color:#fff; }
+.hero-cover .eyebrow { color:#c4d5d9; }
+.hero-copy { color:#dce7df; max-width:610px; font-size:1.08rem; }
+.hero-cover .hero-copy { max-width:570px; }
+.actions { display:flex; flex-wrap:wrap; gap:12px; margin-top:30px; }
+.btn { display:inline-flex; align-items:center; justify-content:center; gap:10px; padding:13px 19px; border-radius:999px; font-weight:700; font-size:.9rem; border:1px solid transparent; transition:transform .2s, background .2s; }
+.btn:hover { transform:translateY(-2px); }
+.btn-gold { background:var(--site-secondary); color:var(--site-on-secondary); }
+.btn-outline { color:white; border-color:rgba(255,255,255,.35); }
+.workflow { background:#fff; border-bottom:1px solid var(--line); }
+.workflow .section-top { display:block; margin-bottom:28px; }
+.workflow .kicker { margin-bottom:10px; }
+.workflow-title { max-width:780px; }
+.workflow-list { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:12px; margin:0; padding:0; list-style:none; }
+.workflow-step { min-height:168px; padding:18px 16px; position:relative; border:1px solid var(--line); border-radius:12px; background:var(--surface); }
+.workflow-step:not(:last-child)::after { content:""; position:absolute; top:32px; right:-13px; z-index:1; width:13px; border-top:1px solid var(--accent); }
+.workflow-no { display:grid; place-items:center; width:28px; height:28px; margin-bottom:17px; border-radius:50%; background:var(--site-primary); color:var(--site-secondary); font:700 .7rem ui-monospace,monospace; }
+.workflow-step h3 { margin:0 0 7px; font-size:.94rem; line-height:1.25; letter-spacing:-.025em; }
+.workflow-step p { margin:0; color:var(--text-muted); font-size:.77rem; line-height:1.5; }
+.flight-evidence { display:grid; grid-template-columns:minmax(260px,.85fr) minmax(0,1.15fr); gap:32px; align-items:center; margin-top:24px; padding:24px; border:1px solid var(--line); border-radius:14px; background:var(--surface-soft); }
+.flight-evidence figure { margin:0; }
+.flight-evidence img { display:block; width:100%; height:300px; object-fit:cover; object-position:center 48%; border-radius:8px; }
+.flight-evidence figcaption { margin-top:8px; color:var(--text-muted); font-size:.7rem; line-height:1.45; }
+.flight-evidence figcaption a { display:inline-block; margin-top:4px; color:var(--accent); font-weight:700; }
+.flight-evidence-content h3 { margin:0 0 8px; font-size:1.15rem; letter-spacing:-.03em; }
+.flight-evidence-content > p { margin:0; color:var(--text-muted); font-size:.8rem; line-height:1.5; }
+.flight-stats { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; margin:22px 0 16px; }
+.flight-stats span { display:flex; min-height:100px; flex-direction:column; justify-content:center; gap:3px; padding:15px; border:1px solid rgba(16,43,63,.1); border-radius:10px; background:#fff; }
+.flight-stats strong { color:var(--site-primary); font-size:clamp(1.45rem,2.2vw,2rem); line-height:1.05; letter-spacing:-.05em; }
+.flight-stats small { color:var(--text-muted); font-size:.73rem; font-weight:650; }
+.flight-evidence-note { font-size:.72rem !important; }
+section { padding:78px 0; }
+.section-top { display:flex; align-items:end; justify-content:space-between; gap:32px; margin-bottom:34px; }
+.kicker { color:var(--accent); text-transform:uppercase; letter-spacing:.15em; font-size:.72rem; font-weight:800; margin-bottom:12px; }
+h2.section-title { font-size:calc(clamp(2rem, 4vw, 3.2rem) * var(--site-heading-scale)); line-height:1.05; letter-spacing:-.065em; margin-bottom:0; }
+.section-intro { color:var(--text-muted); max-width:440px; margin:0; font-size:.95rem; }
+.about { background:var(--site-primary); color:#fff; }
+.about .kicker { color:var(--site-secondary); }
+.about .section-title { color:#fff; }
+.about-layout { display:grid; grid-template-columns:.68fr 1.32fr; gap:42px; align-items:stretch; }
+.about-portrait { min-height:390px; display:flex; flex-direction:column; justify-content:space-between; position:relative; overflow:hidden; padding:24px; border:1px solid rgba(255,255,255,.18); border-radius:16px; background:radial-gradient(ellipse at 54% 80%,rgba(184,243,107,.25),transparent 45%),linear-gradient(155deg,#21485b,#123044 68%); }
+.about-portrait:before,.about-portrait:after { content:""; position:absolute; width:250px; height:250px; border:1px solid rgba(184,243,107,.24); border-radius:50%; left:50%; top:54%; transform:translate(-50%,-50%); box-shadow:0 0 0 28px rgba(184,243,107,.035),0 0 0 58px rgba(184,243,107,.025); }
+.about-portrait:after { width:165px; height:165px; border-style:dashed; animation:portrait-orbit 32s linear infinite; }
+.portrait-grid { position:absolute; inset:0; opacity:.28; background-image:linear-gradient(rgba(255,255,255,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.08) 1px,transparent 1px); background-size:28px 28px; mask-image:linear-gradient(transparent,#000 35%,#000 80%,transparent); }
+.portrait-monogram { position:absolute; z-index:1; left:50%; top:54%; transform:translate(-50%,-50%); color:rgba(255,255,255,.92); font-size:clamp(4rem,8vw,6.5rem); font-weight:900; letter-spacing:-.1em; }
+.portrait-label { position:relative; z-index:2; color:#c4d5d9; font-size:.68rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase; }
+.portrait-caption { position:relative; z-index:2; margin:0; color:#dce7df; font-size:.78rem; }
+.about-content { display:flex; flex-direction:column; justify-content:center; }
+.about-content h2 { margin:0 0 14px; color:#fff; font-size:clamp(2.3rem,4vw,3.6rem); line-height:1; letter-spacing:-.07em; }
+.about-intro { max-width:680px; margin:0; color:#d1dfe0; font-size:1rem; }
+.about-facts { display:grid; grid-template-columns:repeat(4,1fr); margin-top:28px; border:1px solid rgba(255,255,255,.17); border-radius:12px; overflow:hidden; }
+.about-fact { min-height:110px; padding:16px 14px; background:rgba(255,255,255,.035); }
+.about-fact + .about-fact { border-left:1px solid rgba(255,255,255,.15); }
+.about-fact strong { display:block; margin-bottom:8px; color:var(--site-secondary); font-size:1.25rem; letter-spacing:-.04em; line-height:1.1; }
+.about-fact span { display:block; color:#d1dfe0; font-size:.69rem; line-height:1.45; }
+.about-skills { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:24px; }
+.about-skill { display:flex; align-items:center; gap:10px; min-height:56px; padding:10px 12px; border:1px solid rgba(255,255,255,.15); border-radius:9px; color:#f2f7f4; font-size:.75rem; font-weight:650; line-height:1.3; }
+.about-skill svg { flex:none; width:21px; height:21px; color:var(--site-secondary); }
+.about-skill svg path,.about-skill svg circle,.about-skill svg rect,.about-skill svg line,.about-skill svg polyline { vector-effect:non-scaling-stroke; }
+.about-skills-label { margin:22px 0 -12px; color:#b8c9ce; font-size:.68rem; font-weight:800; letter-spacing:.13em; text-transform:uppercase; }
+.projects { background:var(--surface-soft); }
+.project-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:18px; }
+.project { background:var(--surface); border:1px solid var(--line); border-radius:calc(20px * var(--site-radius-scale)); padding:28px; display:flex; flex-direction:column; min-height:340px; }
+.project { transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease; }
+.project:hover { transform:translateY(-5px); border-color:#a5c8c5; box-shadow:0 18px 36px rgba(19,43,58,.08); }
+.project-head { display:flex; justify-content:space-between; gap:14px; align-items:center; margin-bottom:28px; }
+.project-no { color:var(--text-muted); font-size:.78rem; }
+.project-type { color:var(--accent); background:var(--surface-soft); border-radius:999px; padding:6px 10px; font-size:.72rem; font-weight:700; }
+.project h3 { font-size:1.45rem; letter-spacing:-.045em; line-height:1.2; margin-bottom:12px; }
+.project p { color:var(--text-muted); font-size:.92rem; }
+.project-bottom { margin-top:auto; padding-top:20px; border-top:1px solid var(--line); display:flex; flex-wrap:wrap; gap:8px; }
+.tag { font-size:.73rem; color:var(--text-muted); border:1px solid var(--line); padding:5px 8px; border-radius:6px; }
+.experience-list { display:grid; gap:14px; }
+.experience { display:grid; grid-template-columns:.65fr 1.35fr; gap:44px; padding:25px 28px; border:1px solid var(--line); border-radius:14px; background:var(--surface); }
+.exp-date { color:var(--text-muted); font-size:.83rem; }
+.exp-company { font-size:.84rem; color:var(--accent); font-weight:700; margin-bottom:8px; }
+.experience h3 { font-size:1.22rem; letter-spacing:-.035em; margin-bottom:10px; }
+.experience p, .experience li { color:var(--text-muted); font-size:.9rem; }
+.experience ul { padding-left:18px; margin-bottom:0; }
+.experience li { margin:7px 0; }
+.skills-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+.skill-box { border:1px solid var(--line); background:var(--surface); border-radius:calc(16px * var(--site-radius-scale)); padding:24px; }
+.skill-box h3 { font-size:1rem; margin-bottom:16px; }
+.skill-box p { font-size:.87rem; color:var(--text-muted); margin-bottom:0; }
+.achievement { background:var(--site-primary); color:var(--site-on-primary); }
+.achievement .kicker { color:var(--site-secondary); }
+.achievement-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:34px; }
+.achievement-card { padding:23px; border:1px solid rgba(255,255,255,.2); border-radius:calc(16px * var(--site-radius-scale)); }
+.achievement-card strong { display:block; font-size:1.08rem; margin-bottom:8px; }
+.achievement-card p { color:#c6d5cb; font-size:.84rem; margin:0; }
+.activities { background:#fff; }
+.activity-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+.activity-card { position:relative; padding:22px; min-height:175px; border:1px solid var(--line); border-radius:14px; background:var(--surface); }
+.activity-no { display:block; margin-bottom:24px; color:var(--accent); font:700 .7rem ui-monospace,monospace; letter-spacing:.08em; }
+.activity-card h3 { margin-bottom:8px; font-size:1rem; letter-spacing:-.025em; }
+.activity-card p { margin:0; color:var(--text-muted); font-size:.84rem; }
+.education { display:grid; grid-template-columns:1fr 1fr; gap:24px; }
+.edu-card { border:1px solid var(--line); background:var(--surface); padding:28px; border-radius:calc(18px * var(--site-radius-scale)); }
+.edu-card h3 { font-size:1.2rem; margin-bottom:8px; }
+.edu-card p { color:var(--text-muted); font-size:.9rem; margin-bottom:10px; }
+.contact { background:#dff1e7; color:var(--site-on-background); }
+.contact-inner { display:flex; align-items:end; justify-content:space-between; gap:32px; }
+.contact .kicker { color:#168a8a; }
+.contact h2 { font-size:calc(clamp(2.4rem, 5vw, 4.4rem) * var(--site-heading-scale)); line-height:1; letter-spacing:-.07em; max-width:650px; margin:0; }
+.contact p { max-width:420px; margin:18px 0 0; color:#48616a; }
+.contact .btn { background:var(--site-primary); color:white; white-space:nowrap; }
+footer { padding:25px 0; background:var(--site-primary); color:#c7d7cd; font-size:.78rem; }
+.footer-inner { display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap; }
+@keyframes portrait-orbit { to { transform:translate(-50%,-50%) rotate(360deg); } }
+@keyframes drone-flight-loop {
+  0%,100% { transform:translate(-24px,7px) rotate(-7deg); }
+  25% { transform:translate(-3px,-9px) rotate(2deg); }
+  50% { transform:translate(24px,5px) rotate(8deg); }
+  75% { transform:translate(2px,12px) rotate(-2deg); }
+}
+@media (max-width:800px) {
+ .hero-inner { min-height:calc(100svh - 78px); padding:55px 0 70px; }
+ .hero-cover { grid-template-columns:minmax(0,1fr) 180px; gap:20px; }
+ .hero-wordmark { font-size:clamp(4rem,10vw,6rem); }
+ .hero-flight-scene { height:150px; }
+ .workflow-list { grid-template-columns:repeat(2,minmax(0,1fr)); }
+ .workflow-step:not(:last-child)::after { display:none; }
+ .flight-evidence { grid-template-columns:minmax(220px,.8fr) minmax(0,1.2fr); gap:20px; padding:20px; }
+ .flight-evidence img { height:260px; }
+ .about-layout { grid-template-columns:.55fr 1fr; gap:24px; }
+ .about-portrait { min-height:350px; }
+ .about-facts { grid-template-columns:1fr 1fr; }
+ .about-fact:nth-child(3) { border-left:0; border-top:1px solid rgba(255,255,255,.15); }
+ .about-fact:nth-child(4) { border-top:1px solid rgba(255,255,255,.15); }
+ .about-skill { font-size:.7rem; }
+ .section-top { align-items:start; flex-direction:column; gap:16px; }
+ .skills-grid { grid-template-columns:1fr 1fr; }
+ .activity-grid { grid-template-columns:1fr 1fr; }
+ .contact-inner { align-items:start; flex-direction:column; }
+}
+@media (max-width:600px) {
+ .wrap { width:min(100% - 32px, 1120px); }
+ nav { height:68px; }
+ .navlinks { gap:12px; }
+ .navlinks a:not(.nav-cta) { display:none; }
+ .hero-inner { min-height:calc(100svh - 68px); padding:48px 0 62px; }
+ .hero-cover { display:block; position:relative; padding-top:76px; }
+ .hero-wordmark { font-size:clamp(3.7rem, 15vw, 6rem); }
+ .hero-flight-scene { position:absolute; top:0; right:0; width:128px; height:72px; }
+ .workflow-list { grid-template-columns:1fr; }
+ .workflow-step { min-height:0; }
+ .flight-evidence { grid-template-columns:1fr; }
+ .flight-evidence figure { max-width:none; }
+ .flight-evidence img { height:250px; }
+ .flight-stats { gap:7px; }
+ .flight-stats span { min-height:82px; padding:10px; }
+ .flight-stats small { font-size:.65rem; }
+ .hero-copy { font-size:1rem; }
+ section { padding:62px 0; }
+ .about-layout { grid-template-columns:1fr; gap:24px; }
+ .about-portrait { min-height:220px; }
+ .portrait-monogram { font-size:4.5rem; }
+ .about-content h2 { font-size:2.5rem; }
+ .about-skills { grid-template-columns:1fr 1fr; gap:8px; }
+ .about-skill { min-height:60px; padding:9px; font-size:.68rem; }
+ .about-skill svg { width:19px; height:19px; }
+ .about-fact { min-height:98px; padding:13px 11px; }
+ .about-fact strong { font-size:1.1rem; }
+ .about-fact span { font-size:.66rem; }
+ .project-grid, .skills-grid, .education, .achievement-grid, .activity-grid { grid-template-columns:1fr; }
+ .project { min-height:300px; }
+ .experience { grid-template-columns:1fr; gap:8px; }
+ .stats { gap:8px; }
+ .stat { padding:15px; }
+ .stat strong { font-size:1.55rem; }
+ .stat span { font-size:.72rem; }
+ .contact h2 { font-size:2.7rem; }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior:auto; } *, *::before, *::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; transition:none !important; } }
+</style>
+</head>
+<body>
+<div id="app" data-sites-preview-theme="custom">
+  <header class="hero" id="home">
+    <div class="wrap">
+      <nav aria-label="Navigasi utama">
+        <a class="brand" href="#home" aria-label="Moch Rafli Firmansyah — kembali ke beranda">RF<span>.</span></a>
+        <div class="navlinks">
+          <a href="#about">Tentang</a><a href="#projects">Proyek</a><a href="#experience">Pengalaman</a><a class="nav-cta" href="#contact">Kontak ↗</a>
+        </div>
+      </nav>
+      <div class="hero-inner">
+        <div class="hero-cover">
+          <div class="hero-copy-content">
+            <div class="eyebrow"><span class="dot"></span> GIS · REMOTE SENSING · DRONE MAPPING</div>
+            <p class="hero-wordmark">PORTFOLIO</p>
+            <h1>Moch Rafli Firmansyah</h1>
+            <p class="hero-copy">Land mapping, analysis, and monitoring with GIS, drones, and satellite imagery, from field survey to finished map.</p>
+            <div class="actions"><a class="btn btn-gold" href="#projects">View My Projects <span>↓</span></a><a class="btn btn-outline" href="#contact">Get in Touch ↗</a></div>
+          </div>
+          <div class="hero-flight-scene" aria-hidden="true">
+            <svg viewBox="0 0 180 100">
+              <ellipse class="hero-flight-path" cx="90" cy="53" rx="70" ry="28"/>
+              <g class="hero-flight-drone" transform="translate(90 53)" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M-15-4 -30-15M15-4 30-15M-15 4-30 15M15 4 30 15"/>
+                <path d="M-30-15h-8m8 0 4-4m26 4h8m-8 0-4-4m-26 34h-8m8 0 4 4m26-4h8m-8 0-4 4"/>
+                <path d="M-12-7h24l5 7-5 7h-24l-5-7zM-5 7l-3 7h16L5 7"/>
+                <circle cx="0" cy="0" r="2.5" fill="var(--site-secondary)" stroke="none"/>
+              </g>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+  <main>
+    <section class="about" id="about">
+      <div class="wrap">
+        <div class="about-layout">
+          <div class="about-portrait" role="img" aria-label="Placeholder visual profil geospasial Rafli">
+            <span class="portrait-grid" aria-hidden="true"></span>
+            <span class="portrait-label">GIS · FIELD · DRONE</span>
+            <span class="portrait-monogram" aria-hidden="true">RF</span>
+            <p class="portrait-caption">Moch Rafli Firmansyah<br>Geospatial & Land Data</p>
+          </div>
+          <div class="about-content">
+            <div class="kicker">01 / ABOUT ME</div>
+            <h2>Haloo, saya Rafli.</h2>
+            <p class="about-intro">Lulusan Agroekoteknologi (Soil Science) Universitas Brawijaya yang sekarang bekerja di GIS dan drone mapping. Latar belakang tanah dan lahan membentuk cara saya membaca peta sekaligus memahami konteksnya di lapangan.</p>
+            <div class="about-facts" aria-label="Fakta singkat">
+              <div class="about-fact"><strong>2025</strong><span>Lulus S1, Universitas Brawijaya<br>GPA 3.47</span></div>
+              <div class="about-fact"><strong>IEEE</strong><span>Co-author paper IC3INA 2024<br>ML untuk land-use change</span></div>
+              <div class="about-fact"><strong>Gold Medal</strong><span>RAIIC 2022<br>Kategori internasional</span></div>
+              <div class="about-fact"><strong>GIS Officer</strong><span>PT Pupuk Kujang<br>Sejak Mei 2026</span></div>
+            </div>
+            <p class="about-skills-label">Core expertise</p>
+            <div class="about-skills">
+              <div class="about-skill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="m7 9 5-3 5 3v6l-5 3-5-3zM4 7l3 2m13-2-3 2M4 17l3-2m13 2-3-2"/><circle cx="12" cy="12" r="1.5"/></svg><span>Drone Mapping</span></div>
+              <div class="about-skill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 5h16v14H4zM8 9h8M8 12h5M8 15h3"/><circle cx="17" cy="15" r="1"/></svg><span>GIS (QGIS)</span></div>
+              <div class="about-skill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 4v16M4 12h16M6.3 6.3l11.4 11.4m0-11.4L6.3 17.7"/></svg><span>Multispectral Remote Sensing</span></div>
+              <div class="about-skill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 5h16v14H4zM7 15l3-4 2 2 3-5 2 7"/><path d="M7 8h3"/></svg><span>Orthomosaic Processing</span></div>
+              <div class="about-skill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M5 19h14M7 17l2-5h6l2 5M9 12l1-4h4l1 4M12 4v3"/><path d="M4 7c2-2 4-2 6 0m4 0c2-2 4-2 6 0"/></svg><span>Precision Fertilization Recommendation</span></div>
+              <div class="about-skill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="6" cy="17" r="2"/><circle cx="18" cy="7" r="2"/><circle cx="12" cy="12" r="2"/><path d="m7.7 15.7 2.8-2.3m3-2.8 2.8-2.9M8 17h8m-2-4 2.8 2.3"/></svg><span>Machine Learning untuk LULC</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="workflow" id="workflow" aria-labelledby="workflow-title">
+      <div class="wrap">
+        <div class="section-top">
+          <div>
+            <div class="kicker">02 / WORKFLOW</div>
+            <h2 class="section-title workflow-title" id="workflow-title">Dari field survey sampai peta rekomendasi.</h2>
+          </div>
+        </div>
+        <ol class="workflow-list">
+          <li class="workflow-step"><span class="workflow-no">01</span><h3>Survey & Planning</h3><p>Cek lokasi, tentukan area dan jalur terbang.</p></li>
+          <li class="workflow-step"><span class="workflow-no">02</span><h3>Drone Flight</h3><p>Akuisisi foto udara di lapangan.</p></li>
+          <li class="workflow-step"><span class="workflow-no">03</span><h3>Orthomosaic Processing</h3><p>Foto digabung menjadi satu peta akurat.</p></li>
+          <li class="workflow-step"><span class="workflow-no">04</span><h3>Delineasi di QGIS</h3><p>Tandai batas blok dan lahan.</p></li>
+          <li class="workflow-step"><span class="workflow-no">05</span><h3>Rekomendasi</h3><p>Peta pemupukan presisi untuk tim lapangan.</p></li>
+        </ol>
+        <div class="flight-evidence">
+          <figure>
+            <img src="WhatsApp%20Image%202026-10-22%20at%2010.44.54.jpeg" alt="Tampilan Flight Data pada controller DJI: 133 jam 27 menit, 668 penerbangan, dan jarak 3638.945 km" loading="lazy">
+            <figcaption>Bukti Flight Data dari controller DJI unit operasional.<br><a href="WhatsApp%20Image%202026-10-22%20at%2010.44.54.jpeg">Lihat foto ukuran asli ↗</a></figcaption>
+          </figure>
+          <div class="flight-evidence-content">
+            <h3>Rekap flight log operasional</h3>
+            <p>Angka ringkas yang dibulatkan ke bawah dari total yang terlihat pada controller.</p>
+            <div class="flight-stats" aria-label="Rekap flight log: lebih dari 100 jam, lebih dari 500 penerbangan, dan lebih dari 3.000 kilometer">
+              <span><strong>100+</strong><small>jam terbang</small></span>
+              <span><strong>500+</strong><small>flight</small></span>
+              <span><strong>3.000+</strong><small>km</small></span>
+            </div>
+            <p class="flight-evidence-note">Flight log unit drone operasional, dikerjakan bergantian 2–3 pilot; bukan angka personal.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section id="experience">
+      <div class="wrap">
+        <div class="section-top"><div><div class="kicker">04 / Pengalaman</div><h2 class="section-title">Dari riset hingga<br>implementasi lapangan.</h2></div><p class="section-intro">Pengalaman di pemetaan pertanian korporat dan riset geospasial terapan. Setiap peran dirangkum dalam kartu terpisah.</p></div>
+        <div class="experience-list">
+          <article class="experience"><div><div class="exp-date">Mei 2026 – Des 2026 (Estimasi)</div></div><div><div class="exp-company">PT Pupuk Kujang · Cikampek, Indonesia</div><h3>GIS Officer & Digitalisasi</h3><ul><li>Memimpin perencanaan, pemrosesan GIS, pelaksanaan lapangan, dan reporting untuk proyek precision mapping dan digitalisasi AgriTech dengan target 5.400 hektare.</li><li>Mengkoordinasikan tim lapangan dan memantau deliverables spasial agar sesuai standar kualitas manajemen dan timeline proyek.</li></ul></div></article>
+          <article class="experience"><div><div class="exp-date">Nov 2025 – Mei 2026</div></div><div><div class="exp-company">PT Pupuk Kujang · MagangHub BUMN</div><h3>Intern AgriTechnology & GIS Mapping</h3><ul><li>Mendukung pemetaan pertanian seluas 6.500 hektare menggunakan workflow DJI Mavic 3M dan Agras T50.</li><li>Memproses imagery multispektral dan NDVI dengan Agisoft Metashape serta QGIS untuk mendukung precision agriculture dan perencanaan Variable Rate Application.</li><li>Menginisiasi workflow delineasi berbantuan AI dan berkoordinasi dengan komunitas petani.</li></ul></div></article>
+          <article class="experience"><div><div class="exp-date">Jul 2024 – Sep 2024</div></div><div><div class="exp-company">BRIN · KST Samaun Samadikun, Bandung</div><h3>Intern Riset GeoAI / Data Spasial</h3><ul><li>Mengerjakan pemetaan tutupan lahan sawah dan analisis indeks kekeringan menggunakan imagery Sentinel-2, Google Earth Engine, dan machine learning.</li><li>Berkontribusi dalam validasi lapangan dan output riset pemantauan penggunaan lahan di Indramayu dan Bandung Utara.</li><li>Berkontribusi pada publikasi riset dan proyek plugin QGIS untuk analisis indeks kekeringan.</li></ul></div></article>
+        </div>
+      </div>
+    </section>
+    <section class="projects" id="projects">
+      <div class="wrap">
+        <div class="section-top"><div><div class="kicker">05 / Proyek pilihan</div><h2 class="section-title">Solusi untuk tantangan<br>spasial di dunia nyata.</h2></div><p class="section-intro">Pilihan proyek operasional dan riset yang pernah dikerjakan. Detail dapat dilengkapi dengan peta, screenshot, dan output publik yang tersedia.</p></div>
+        <div class="project-grid">
+          <article class="project"><div class="project-head"><span class="project-no">PROYEK 01</span><span class="project-type">Precision Agriculture</span></div><h3>Precision Mapping & Digitalisasi AgriTech</h3><p>Memimpin perencanaan, pemrosesan GIS, pelaksanaan lapangan, dan reporting untuk inisiatif precision mapping di PT Pupuk Kujang. Mengkoordinasikan tim lapangan serta memastikan output spasial memenuhi standar kualitas dan timeline proyek.</p><div class="project-bottom"><span class="tag">GIS</span><span class="tag">Operasional Lapangan</span><span class="tag">Spatial QA</span><span class="tag">AgriTech</span></div></article>
+          <article class="project"><div class="project-head"><span class="project-no">PROYEK 02</span><span class="project-type">Drone Mapping</span></div><h3>Pemetaan Pertanian Multispektral</h3><p>Mendukung pemetaan area 6.500 hektare menggunakan workflow DJI Mavic 3M dan Agras T50. Memproses imagery multispektral dan output NDVI dengan Agisoft Metashape serta QGIS untuk mendukung perencanaan Variable Rate Application.</p><div class="project-bottom"><span class="tag">DJI Mavic 3M</span><span class="tag">Metashape</span><span class="tag">QGIS</span><span class="tag">NDVI</span></div></article>
+          <article class="project"><div class="project-head"><span class="project-no">PROYEK 03</span><span class="project-type">GeoAI & Riset</span></div><h3>Pemetaan Sawah & Pemantauan Kekeringan</h3><p>Berkontribusi dalam analisis spasial sawah dan indikator kekeringan menggunakan imagery Sentinel-2, Google Earth Engine, dan machine learning. Cakupan kerja meliputi klasifikasi Random Forest, indeks spektral, pengembangan dashboard, dan validasi lapangan di Jawa Barat.</p><div class="project-bottom"><span class="tag">Sentinel-2</span><span class="tag">Google Earth Engine</span><span class="tag">Random Forest</span><span class="tag">NDVI / NDWI / BSI</span></div></article>
+          <article class="project"><div class="project-head"><span class="project-no">PROYEK 04</span><span class="project-type">Riset Sarjana</span></div><h3>Estimasi Properti Tanah pada Lahan Sawah</h3><p>Menyelesaikan riset sarjana tentang pH dan electrical conductivity sebagai prediktor kalsium dapat ditukar (Ca-dd) pada tanah sawah di Malang, Jawa Timur. Riset menggunakan 50 sampel tanah yang dikumpulkan pada November 2024 hingga April 2025.</p><div class="project-bottom"><span class="tag">Ilmu Tanah</span><span class="tag">Sampling Lapangan</span><span class="tag">Analisis Statistik</span><span class="tag">Riset</span></div></article>
+        </div>
+      </div>
+    </section>
+    <section class="achievement" id="achievements"><div class="wrap"><div class="kicker">06 / Riset, Publikasi & Penghargaan</div><h2 class="section-title">Riset, inisiatif,<br>dan kolaborasi.</h2><div class="achievement-grid">
+      <div class="achievement-card"><strong>Finalis PIMNAS 36</strong><p>Finalis Program Kreativitas Mahasiswa bidang Riset Sosial Humaniora, dengan output berupa presentasi poster dan karya tulis.</p></div>
+      <div class="achievement-card"><strong>Medali Emas Internasional · RAIIC 2022</strong><p>Penghargaan atas riset yang menggabungkan AI dan GIS dalam studi desalinasi air laut.</p></div>
+      <div class="achievement-card"><strong>Kontribusi Publikasi Riset</strong><p>Berkontribusi pada output riset pemantauan penggunaan lahan, termasuk publikasi IEEE. Lengkapi judul paper dan DOI sebelum portofolio dipublikasikan.</p></div>
+    </div></div></section>
+    <section id="education"><div class="wrap"><div class="section-top"><div><div class="kicker">07 / Pendidikan</div><h2 class="section-title">Berakar pada ilmu tanah.</h2></div></div><div class="education">
+      <div class="edu-card"><div class="kicker">2021 – 2025</div><h3>Universitas Brawijaya</h3><p>Sarjana Pertanian · Agroekoteknologi</p><p>Departemen Ilmu Tanah · Manajemen Sumber Daya Lahan</p><p><strong>IPK: 3,47 / 4,00</strong></p></div>
+      <div class="edu-card"><div class="kicker">Pembelajaran tambahan</div><h3>Mata kuliah relevan</h3><p>Pengelolaan DAS · Sistem Informasi Sumber Daya Lahan · Konservasi Tanah dan Air · Rehabilitasi dan Reklamasi Lahan · Analisis Lanskap Terpadu · Pertanian Berkelanjutan</p><p>Bahasa Inggris: TOEFL ITP 510</p></div>
+    </div></div></section>
+    <section class="activities" id="activities">
+      <div class="wrap">
+        <div class="section-top"><div><div class="kicker">08 / Kegiatan lain</div><h2 class="section-title">Aktif berkolaborasi<br>di lapangan dan riset.</h2></div><p class="section-intro">Kontribusi lintas tim, komunitas, dan pengembangan tools yang melengkapi pengalaman profesional.</p></div>
+        <div class="activity-grid">
+          <article class="activity-card"><span class="activity-no">01 / FIELD</span><h3>Validasi & sampling lapangan</h3><p>Terlibat dalam validasi kondisi lahan dan pengambilan sampel untuk mendukung pemetaan serta riset tanah.</p></article>
+          <article class="activity-card"><span class="activity-no">02 / COMMUNITY</span><h3>Koordinasi komunitas petani</h3><p>Mendukung engagement dengan komunitas petani sebagai bagian dari implementasi workflow AgriTech.</p></article>
+          <article class="activity-card"><span class="activity-no">03 / OPEN TOOLS</span><h3>Kontribusi plugin QGIS</h3><p>Berkontribusi pada pengembangan plugin QGIS untuk analisis indeks kekeringan dalam kegiatan riset.</p></article>
+        </div>
+      </div>
+    </section>
+    <section class="contact" id="contact"><div class="wrap contact-inner"><div><div class="kicker">Ada peluang yang cocok?</div><h2>Mari optimalkan data spasial.</h2><p>Saya terbuka untuk peluang di bidang GIS, geospatial analytics, remote sensing, dan precision agriculture. Pastikan alamat email sudah diperbarui sebelum portofolio ini dibagikan ke recruiter.</p></div><a class="btn" href="mailto:YOUR.EMAIL@example.com">Kirim email ↗</a></div></section>
+  </main>
+  <footer><div class="wrap footer-inner"><span>© 2026 Moch Rafli Firmansyah</span><span>Geospatial · Remote Sensing · AgriTech</span><span>Garut, Indonesia</span></div></footer>
+</div>
+<script>
+  history.scrollRestoration = "manual";
+  window.addEventListener("load", () => {
+    if (location.hash) history.replaceState(null, "", location.href.split("#")[0]);
+    requestAnimationFrame(() => requestAnimationFrame(() => window.scrollTo({ top: 0, left: 0, behavior: "instant" })));
+  }, { once: true });
+</script>
+</body>
+</html>
